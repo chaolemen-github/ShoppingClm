@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    //29.0.3
     compileSdkVersion 28
     buildToolsVersion "29.0.3"
     defaultConfig {
@@ -16,21 +17,63 @@ android {
             abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
     }
-    buildTypes {
+
+    signingConfigs {
+        debug {
+            //设置签名文件
+            storeFile file('clm.jks')
+            storePassword "123456"
+            keyAlias "key0"
+            keyPassword "123456"
+        }
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            storeFile file('clm.jks')
+            storePassword "123456"
+            keyAlias "key0"
+            keyPassword "123456"
         }
     }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+//    buildTypes {
+//        release {
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//        }
+//    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    //noinspection GradleCompatible
+    implementation ('com.android.support:appcompat-v7:28.0.0', {
+        exclude group: 'com.android.support', module: 'design'
+    })
+    implementation ('com.android.support.constraint:constraint-layout:1.1.3', {
+        exclude group: 'com.android.support', module: 'design'
+    })
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation ('com.android.support.test:runner:1.0.2', {
+        exclude group: 'com.android.support', module: 'design'
+    })
+    androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.2', {
+        exclude group: 'com.android.support', module: 'design'
+    })
+    //noinspection GradleCompatible
+    implementation 'com.android.support:design:27.1.0'
     implementation project(path: ':mvplibrary')
     implementation project(path: ':httplibrary')
 
@@ -56,4 +99,12 @@ dependencies {
     implementation  'com.umeng.umsdk:oaid_mi:1.0.0' // (可选)
     implementation  'com.umeng.umsdk:oaid_oppo:1.0.4' // (可选)
     implementation  'com.umeng.umsdk:oaid_vivo:1.0.0.1' // (可选)
+
+//BottomNavigationBar
+    implementation 'com.ashokvarma.android:bottom-navigation-bar:2.0.2'
+
+//    ButterKnife
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
 }
