@@ -6,6 +6,20 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
+    <!-- 搜索输入框样式-->
+    <style name="SearchHeaderEtStyle">
+        <item name="android:textColor">@color/common_white</item>
+        <item name="android:textColorHint">@color/common_white</item>
+
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:drawableLeft">@mipmap/icon_search</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:maxLines">1</item>
     </style>
 
 </resources>

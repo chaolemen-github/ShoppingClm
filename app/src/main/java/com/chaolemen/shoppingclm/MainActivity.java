@@ -82,7 +82,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     private void setDefaultFragment() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        homeFragment = HomeFragment.newInstance("首页");
+        homeFragment = new HomeFragment();
         transaction.replace(R.id.frameLayout_main, homeFragment);
         transaction.commit();
     }
