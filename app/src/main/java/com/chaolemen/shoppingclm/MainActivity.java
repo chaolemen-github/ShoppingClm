@@ -51,7 +51,6 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
                  *  MODE_FIXED 固定模式：未选中的Item显示文字，无切换动画效果。
                  *  MODE_SHIFTING 切换模式：未选中的Item不显示文字，选中的显示文字，有切换动画效果。
                  */
-
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
                 /**
                  *  setBackgroundStyle() 内的参数有三种样式
@@ -60,13 +59,12 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
                  *  BACKGROUND_STYLE_STATIC: 静态样式 点击无波纹效果
                  *  BACKGROUND_STYLE_RIPPLE: 波纹样式 点击有波纹效果
                  */
-
                 .setActiveColor("#FF107FFD") //选中颜色
                 .setInActiveColor("#808080") //未选中颜色
                 .setBarBackgroundColor("#ffffff");//导航栏背景色
 
         /** 添加导航按钮 */
-        int lastSelectedPosition = 5;
+        int lastSelectedPosition = 5;//个数
         bnrMain.addItem(new BottomNavigationItem(R.drawable.select_home, "首页"))
                 .addItem(new BottomNavigationItem(R.drawable.select_category, "分类"))
                 .addItem(new BottomNavigationItem(R.drawable.select_cart, "购物车"))
@@ -105,6 +103,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         FragmentTransaction transaction = fm.beginTransaction();
         switch (position) {
             case 0:
+                //判空，为空创建并加载fragment
                 if (homeFragment == null) {
                     homeFragment = new HomeFragment();
                 }
