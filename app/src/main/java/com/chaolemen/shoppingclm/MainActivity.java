@@ -2,18 +2,18 @@ package com.chaolemen.shoppingclm;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.chaolemen.shoppingclm.category.fragments.CategoryFragment;
 import com.chaolemen.mvplibrary.base.BaseActivity;
 import com.chaolemen.shoppingclm.fragments.CartFragment;
-import com.chaolemen.shoppingclm.fragments.CategoryFragment;
 import com.chaolemen.shoppingclm.fragments.HomeFragment;
 import com.chaolemen.shoppingclm.fragments.MsgFragment;
-import com.chaolemen.shoppingclm.fragments.UserFragment;
+import com.chaolemen.shoppingclm.user.UserFragment;
 
 import butterknife.BindView;
 
@@ -25,6 +25,8 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     FrameLayout frameLayoutMain;
     @BindView(R.id.bnr_main)
     BottomNavigationBar bnrMain;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     private HomeFragment homeFragment;
     private MsgFragment msgFragment;
     private CartFragment cartFragment;
@@ -39,7 +41,8 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
 
     @Override
     protected void initEvent() {
-
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
 //        homeFragment = new HomeFragment();
         /** 导航基础设置 包括按钮选中效果 导航栏背景色等 */
         bnrMain
@@ -75,6 +78,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
 
         setDefaultFragment();//设置默认导航栏
     }
+
 
     /**
      * 设置默认导航栏
@@ -156,4 +160,6 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     public void onTabReselected(int position) {
 
     }
+
+
 }

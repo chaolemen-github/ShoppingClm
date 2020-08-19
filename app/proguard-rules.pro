@@ -21,5 +21,5 @@
 #-renamesourcefileattribute SourceFile
 
 #Bugly的代码混淆
--dontwarn com.tencent.bugly.**
--keep public class com.tencent.bugly.**{*;}
+#-dontwarn com.tencent.bugly.**
+#-keep public class com.tencent.bugly.**{*;}

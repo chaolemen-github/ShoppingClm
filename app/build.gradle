@@ -5,7 +5,8 @@ android {
     compileSdkVersion 28
     buildToolsVersion "29.0.3"
     defaultConfig {
-        applicationId "com.chaolemen.shoppingclm"
+//        applicationId "com.chaolemen.shoppingclm"
+        applicationId "com.android.knowme"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
@@ -19,86 +20,104 @@ android {
     }
 
     signingConfigs {
-        debug {
-            //设置签名文件
-            storeFile file('clm.jks')
-            storePassword "123456"
-            keyAlias "key0"
-            keyPassword "123456"
-        }
+//        debug {
+//            //设置签名文件
+//            storeFile file('clm.jks')
+//            storePassword "123456"
+//            keyAlias "key0"
+//            keyPassword "123456"
+//        }
+//        release {
+//            storeFile file('clm.jks')
+//            storePassword "123456"
+//            keyAlias "key0"
+//            keyPassword "123456"
+//        }
+
         release {
-            storeFile file('clm.jks')
-            storePassword "123456"
-            keyAlias "key0"
-            keyPassword "123456"
+            storeFile file('zhiwozhixiang.jks')
+            keyAlias "bjqjqc"
+//            keyPassword System.getenv("zwzx_key_store_pw")
+//            storePassword System.getenv("zwzx_key_store_pw2")
+            keyPassword "zhiwozhixiang@"
+            storePassword "zhiwozhixiang@"
+        }
+
+        debug {
+            storeFile file('zhiwozhixiang.jks')
+            keyAlias "bjqjqc"
+            keyPassword "zhiwozhixiang@"
+            storePassword "zhiwozhixiang@"
         }
     }
+
+
     buildTypes {
+
+
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         debug {
             signingConfig signingConfigs.debug
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
 
-//    buildTypes {
-//        release {
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-//        }
-//    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleCompatible
-    implementation ('com.android.support:appcompat-v7:28.0.0', {
+    implementation('com.android.support:appcompat-v7:28.0.0', {
         exclude group: 'com.android.support', module: 'design'
     })
-    implementation ('com.android.support.constraint:constraint-layout:1.1.3', {
+    implementation('com.android.support.constraint:constraint-layout:1.1.3', {
         exclude group: 'com.android.support', module: 'design'
     })
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation ('com.android.support.test:runner:1.0.2', {
+    androidTestImplementation('com.android.support.test:runner:1.0.2', {
         exclude group: 'com.android.support', module: 'design'
     })
-    androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'design'
     })
     //noinspection GradleCompatible
     implementation 'com.android.support:design:27.1.0'
     implementation project(path: ':mvplibrary')
     implementation project(path: ':httplibrary')
+    implementation project(path: ':libumengsharelogin')
 
-   // implementation 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.2.0
-    implementation 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
-    implementation 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
+    // implementation 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.2.0
+    implementation 'com.tencent.bugly:crashreport:latest.release'
+    //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
+    implementation 'com.tencent.bugly:nativecrashreport:latest.release'
+    //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
 
     //内存泄漏检测工具依赖
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'//
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'//
-    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'//
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 
 
     // 下面各SDK根据宿主App是否使用相关业务按需引入。
     // OAID目前为目前国内市场主流的Android Q设备标识，可根据需要选择。
     // 友盟统计SDK
-    implementation  'com.umeng.umsdk:common:9.1.0' // (必选)
-    implementation  'com.umeng.umsdk:game:9.1.0+G' // 游戏统计SDK依赖(可选)
-    implementation  'com.umeng.umsdk:asms:1.1.3' // asms包依赖(必选)
-    implementation 'com.umeng.umsdk:crash:0.0.4' // native crash包依赖(必选)
-
-    implementation  'com.umeng.umsdk:oaid_lenovo:1.0.0' // (可选)
-    implementation  'com.umeng.umsdk:oaid_mi:1.0.0' // (可选)
-    implementation  'com.umeng.umsdk:oaid_oppo:1.0.4' // (可选)
-    implementation  'com.umeng.umsdk:oaid_vivo:1.0.0.1' // (可选)
+//    implementation 'com.umeng.umsdk:common:8.0.2' // (必选)
+////    implementation 'com.umeng.umsdk:game:9.1.0+G' // 游戏统计SDK依赖(可选)
+//    implementation 'com.umeng.umsdk:asms:1.1.3' // asms包依赖(必选)
+//    implementation 'com.umeng.umsdk:crash:0.0.4' // native crash包依赖(必选)
+//
+//    implementation 'com.umeng.umsdk:oaid_lenovo:1.0.0' // (可选)
+//    implementation 'com.umeng.umsdk:oaid_mi:1.0.0' // (可选)
+//    implementation 'com.umeng.umsdk:oaid_oppo:1.0.4' // (可选)
+//    implementation 'com.umeng.umsdk:oaid_vivo:1.0.0.1' // (可选)
 
 //BottomNavigationBar底部导航
     implementation 'com.ashokvarma.android:bottom-navigation-bar:2.0.2'
@@ -108,7 +127,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     // banner 轮播图
-    implementation'com.youth.banner:banner:1.4.10'
+    implementation 'com.youth.banner:banner:1.4.10'
 
     // 图片框架依赖
     implementation 'com.github.bumptech.glide:glide:4.8.0'
@@ -117,9 +136,18 @@ dependencies {
     //卡片布局
     implementation 'com.android.support:cardview-v7:28.0.0'
 
-//    implementation 'com.github.shts:TriangleLabelView:1.1.0'
-    compile 'com.github.shts:TriangleLabelView:1.1.2'
+    //三角标签
+    implementation 'com.github.shts:TriangleLabelView:1.1.2'
 
 //    //画廊
-//    implementation 'com.github.crosswall:Android-Coverflow:release-v1.0.1'
+//    api 'com.github.crosswall:Android-Coverflow:release-v1.0.1'
+    implementation 'com.github.crosswall:Android-Coverflow:release-v1.0.4'
+
+    //万能适配器依赖
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
+
+    //EventBus
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
+
 }

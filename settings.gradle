@@ -1,1 +1,1 @@
-include ':app', ':httplibrary', ':mvplibrary'
+include ':app', ':httplibrary', ':mvplibrary', ':libumengsharelogin'

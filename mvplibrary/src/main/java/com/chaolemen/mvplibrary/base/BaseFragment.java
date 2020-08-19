@@ -17,7 +17,7 @@ import butterknife.Unbinder;
 
 public abstract class BaseFragment extends RxFragment {
 
-    public Activity activity;
+    public Activity mActivity;
     public Context context;
     private View root;
     private Unbinder unbinder;
@@ -26,7 +26,7 @@ public abstract class BaseFragment extends RxFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        activity= (Activity) context;
+        mActivity= (Activity) context;
         this.context=context;
     }
 

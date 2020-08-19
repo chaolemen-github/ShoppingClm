@@ -16,10 +16,10 @@ public abstract class BaseCallBack<T> extends BaseObserver {
     @Override
     public void onNext(Object t) {
         super.onNext(t);
-        Log.e("liangxq", "onNext:111"+t.toString() );
+        Log.e("原始数据", "onNext:111"+t.toString() );
         //返回的是个json串
         T parse = parse((String) t);
-        Log.e("liangxq", "onNext:222"+parse.toString() );
+        Log.e("底层解析", "onNext:222"+parse.toString() );
         if(callSuccess&&isCodeSuccess()){
             onSuccess(parse);
         }

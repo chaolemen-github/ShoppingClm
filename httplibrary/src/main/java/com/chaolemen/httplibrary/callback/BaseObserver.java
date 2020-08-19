@@ -1,6 +1,7 @@
 package com.chaolemen.httplibrary.callback;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 
 import com.chaolemen.httplibrary.HttpGlobalConfig;
@@ -25,6 +26,7 @@ public abstract class BaseObserver implements Observer{
 
     @Override
     public void onNext(Object t) {
+        Log.e("原始数据", "onNext:000"+t.toString() );
         if(!TextUtils.isEmpty(tag)){
             RequestManagerIml.getInstance().remove(tag);
         }

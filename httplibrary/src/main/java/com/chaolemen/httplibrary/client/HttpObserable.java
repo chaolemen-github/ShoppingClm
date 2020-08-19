@@ -1,5 +1,7 @@
 package com.chaolemen.httplibrary.client;
 
+import android.util.Log;
+
 import com.chaolemen.httplibrary.callback.BaseObserver;
 import com.chaolemen.httplibrary.exceptiopn.ExceptionEngine;
 import com.google.gson.Gson;
@@ -40,6 +42,7 @@ public class HttpObserable {
         return observable.map(new Function<JsonElement,Object>() {
             @Override
             public Object apply(JsonElement o) throws Exception {
+                Log.e("liangxq", "apply: "+o.toString() );
                 return new Gson().toJson(o);
             }
         });

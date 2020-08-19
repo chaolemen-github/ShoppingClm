@@ -3,28 +3,19 @@ package com.chaolemen.shoppingclm.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.chaolemen.mvplibrary.base.BaseFragment;
 import com.chaolemen.shoppingclm.R;
 import com.chaolemen.shoppingclm.adapter.HomeRecyclerAdapter;
-import com.chaolemen.shoppingclm.adapter.MyViewPagerAdapter;
-import com.chaolemen.shoppingclm.topic.GallyPageTransformer;
-import com.chaolemen.shoppingclm.topic.ImageUtil;
+import com.chaolemen.shoppingclm.adapter.VpAdapter;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.loader.ImageLoader;
@@ -34,8 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,7 +50,11 @@ public class HomeFragment extends BaseFragment {
     String HOME_TOPIC_THREE = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502876222250&di=aa3290c84822ba5570f19cb76e1012af&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F0146d25768b5a10000018c1b00cf27.jpg%40900w_1l_2o_100sh.jpg";
     String HOME_TOPIC_FOUR = "http://img.zcool.cn/community/01796c58772f66a801219c77e4fc04.png@1280w_1l_2o_100sh.png";
     String HOME_TOPIC_FIVE = "http://img.zcool.cn/community/0154805791ffeb0000012e7edba495.jpg@900w_1l_2o_100sh.jpg";
-
+    /*
+        初始化主题
+     */
+    private static final float MIN_SCALE = 0.85f;
+    private static final float MIN_ALPHA = 0.5f;
 
     @BindView(R.id.fl_home_banner)
     Banner flHomeBanner;
@@ -71,14 +64,12 @@ public class HomeFragment extends BaseFragment {
     TextView tvHomeSpecial;
     @BindView(R.id.recycler_home)
     RecyclerView recyclerHome;
-    @BindView(R.id.viewPager)
-    ViewPager mViewPager;
-    @BindView(R.id.linear_topic)
-    LinearLayout linearTopic;
     @BindView(R.id.ViewFlipper)
     android.widget.ViewFlipper mViewFlipper;
     @BindView(R.id.con)
     ConstraintLayout mConstraintLayout;
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
 
     private int pagerWidth;
     private List<ImageView> imageViews;
@@ -98,55 +89,65 @@ public class HomeFragment extends BaseFragment {
     protected void initData() {
         initBanner();//banner轮播图
         initRecycler();//特价水平滑动
-        initTopic();//画廊
+        initTopicPagerContainer();//画廊
         initViewFlipper();//公告
     }
 
-    private void initTopic() {
+    private void initTopicPagerContainer() {
+//话题
+        List<String> list = new ArrayList<>();
+//        list.add(HOME_TOPIC_ONE);
+//        list.add(HOME_TOPIC_TWO);
+//        list.add(HOME_TOPIC_THREE);
+        list.add(HOME_TOPIC_FOUR);
+        list.add(HOME_TOPIC_FIVE);
+        list.add(HOME_TOPIC_FOUR);
+        list.add(HOME_TOPIC_FIVE);
+        list.add(HOME_TOPIC_FOUR);
 
-        initDataTopic();
-        mViewPager.setOffscreenPageLimit(3);
-        pagerWidth = (int) (getResources().getDisplayMetrics().widthPixels * 3.0f / 5.0f);
-        ViewGroup.LayoutParams lp = mViewPager.getLayoutParams();
-        if (lp == null) {
-            lp = new ViewGroup.LayoutParams(pagerWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-        } else {
-            lp.width = pagerWidth;
-        }
-        mViewPager.setLayoutParams(lp);
-        mViewPager.setPageMargin(-50);
-        linearTopic.setOnTouchListener(new View.OnTouchListener() {
+        VpAdapter vpAdapter = new VpAdapter(getActivity(), list);
+        viewPager.setAdapter(vpAdapter);
+        //动画
+        viewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return mViewPager.dispatchTouchEvent(motionEvent);
+            public void transformPage(View page, float position) {
+
+
+                page.setPivotX(0);//X轴
+                if (position < -1 || position > 1) {
+                    page.setRotationY(0);
+                } else {
+                    if (position < 0) {
+                        page.setPivotX(page.getWidth());
+                        page.setRotationY((position) * 30);
+                        page.setScaleX(1 + (position / 2));
+                    } else {
+                        page.setPivotX(0);
+                        page.setRotationY(position * 30);
+                        page.setScaleX(1 - (position / 2));
+                    }
+                }
+//                int pageWidth = page.getWidth();
+//                int pageHeight = page.getHeight();
+//
+//                if (position < -1) { // [-Infinity,-1)
+//                    // This page is way off-screen to the left.
+//                    page.setAlpha(0);
+//
+//                } else if (position <= 1) { // [-1,1]
+//                    // Modify the default slide transition to shrink the page as well
+//                    float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
+//                    float vertMargin = pageHeight * (1 - scaleFactor) / 2;
+//                    float horzMargin = pageWidth * (1 - scaleFactor) / 2;
+//                    if (position < 0) {
+//                        page.setTranslationX(horzMargin - vertMargin / 2);
+//                    } else {
+//                        page.setTranslationX(-horzMargin + vertMargin / 2);
+//                    }
+//
+//                }
             }
         });
-        mViewPager.setPageTransformer(true, new GallyPageTransformer());
-        mViewPager.setAdapter(new MyViewPagerAdapter(imageViews));
-    }
-
-    private void initDataTopic() {
-        imageViews = new ArrayList<>();
-        ImageView first = new ImageView(getActivity());
-        first.setImageBitmap(ImageUtil.getReverseBitmapById(R.mipmap.topic4, getActivity()));
-//        first.setImageResource(R.mipmap.first);
-        ImageView second = new ImageView(getActivity());
-        second.setImageBitmap(ImageUtil.getReverseBitmapById(R.mipmap.topic5, getActivity()));
-//        second.setImageResource(R.mipmap.second);
-        ImageView third = new ImageView(getActivity());
-        third.setImageBitmap(ImageUtil.getReverseBitmapById(R.mipmap.topic4, getActivity()));
-//        third.setImageResource(R.mipmap.third);
-        ImageView fourth = new ImageView(getActivity());
-//        fourth.setImageBitmap(ImageUtil.getReverseBitmapById(R.mipmap.fourth,MainActivity.this));
-        fourth.setImageResource(R.mipmap.topic5);
-        ImageView fifth = new ImageView(getActivity());
-        fifth.setImageBitmap(ImageUtil.getReverseBitmapById(R.mipmap.topic4, getActivity()));
-//        fifth.setImageResource(R.mipmap.fifth);
-        imageViews.add(first);
-        imageViews.add(second);
-        imageViews.add(third);
-        imageViews.add(fourth);
-        imageViews.add(fifth);
     }
 
 
@@ -192,8 +193,6 @@ public class HomeFragment extends BaseFragment {
         //banner设置方法全部调用完毕时最后调用
         flHomeBanner.start();
     }
-
-
 
 
     public class GlideImageLoader extends ImageLoader {

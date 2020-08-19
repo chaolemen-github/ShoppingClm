@@ -1,4 +1,4 @@
-package com.chaolemen.shoppingclm.adapter;
+package com.chaolemen.shoppingclm.category.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,18 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.chaolemen.shoppingclm.R;
+import com.chaolemen.shoppingclm.category.bean.CategoryItem;
 
 import java.util.List;
 
-public class TopicRecyclerAdapter extends RecyclerView.Adapter<TopicRecyclerAdapter.ViewHolder> {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class CategoryItemAdapter extends RecyclerView.Adapter<CategoryItemAdapter.ViewHolder> {
 
     Context context;
-    List<String> list;
+    List<CategoryItem> list;
 
-    public TopicRecyclerAdapter(Context context, List<String> list) {
+    public CategoryItemAdapter(Context context, List<CategoryItem> list) {
         this.context = context;
         this.list = list;
     }
@@ -26,13 +30,14 @@ public class TopicRecyclerAdapter extends RecyclerView.Adapter<TopicRecyclerAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(context).inflate(R.layout.fragment_home_recycler_topic, parent, false);
+        View inflate = LayoutInflater.from(context).inflate(R.layout.activity_category_item, parent, false);
         return new ViewHolder(inflate);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(context).load(list.get(position)).into(holder.img);
+        CategoryItem categoryItem = list.get(position);
+
     }
 
     @Override
@@ -40,11 +45,17 @@ public class TopicRecyclerAdapter extends RecyclerView.Adapter<TopicRecyclerAdap
         return list.size();
     }
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView img;
+        @BindView(R.id.iv_cate_item_img)
+        ImageView ivCateItemImg;
+        @BindView(R.id.tv_cate_item_text)
+        TextView tvCateItemText;
         public ViewHolder(View itemView) {
             super(itemView);
-            img=itemView.findViewById(R.id.home_recycler_topic_img);
+            ButterKnife.bind(this, itemView);
         }
     }
+
+
 }

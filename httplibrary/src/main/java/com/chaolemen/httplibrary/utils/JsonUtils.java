@@ -53,6 +53,9 @@ public class JsonUtils {
     public static <T> T jsonToClass(JsonElement data, Class<T> tClass){
         return new Gson().fromJson(data,tClass);
     }
+    public static <T> T jsonToClass(String data, Class<T> tClass){
+        return new Gson().fromJson(data,tClass);
+    }
     //实体类转json字符串
     public static <T> String classToJson(T t){
         return new Gson().toJson(t);
