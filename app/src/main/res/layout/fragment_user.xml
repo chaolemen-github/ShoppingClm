@@ -145,6 +145,7 @@
         android:background="@color/common_divider" />
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/cons_setting"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40">
 

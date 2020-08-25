@@ -428,4 +428,19 @@
     <dimen name="sp_42">42sp</dimen>
     <dimen name="sp_48">48sp</dimen>
 
+
+    <dimen name="common_divider_height">@dimen/dp_1</dimen>
+    <dimen name="common_divider_width">@dimen/dp_1</dimen>
+    <dimen name="common_header_bar_height">@dimen/dp_50</dimen>
+    <dimen name="common_icon_height">@dimen/dp_60</dimen>
+    <dimen name="common_icon_width">@dimen/dp_60</dimen>
+    <dimen name="common_line_height">@dimen/dp_60</dimen>
+    <dimen name="common_margin">@dimen/dp_10</dimen>
+    <dimen name="common_margin_middle">@dimen/dp_10</dimen>
+    <dimen name="common_margin_small">@dimen/dp_5</dimen>
+    <dimen name="common_padding">@dimen/dp_15</dimen>
+    <dimen name="common_padding_middle">@dimen/dp_5</dimen>
+    <dimen name="common_padding_small">@dimen/dp_5</dimen>
+    <dimen name="common_radius">@dimen/dp_6</dimen>
+    <dimen name="common_border_size">@dimen/dp_1</dimen>
 </resources>

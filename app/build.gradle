@@ -149,5 +149,10 @@ dependencies {
     //EventBus
     implementation 'org.greenrobot:eventbus:3.1.1'
 
+//    implementation project(':BasePop')
+
+    //购物车数量加减控件
+    implementation 'ren.qinc.numberbutton:numberbutton:0.0.1'
+    api 'com.zhy:flowlayout-lib:1.0.3'
 
 }

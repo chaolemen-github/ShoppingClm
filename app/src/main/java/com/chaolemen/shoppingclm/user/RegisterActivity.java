@@ -22,6 +22,7 @@ import com.chaolemen.shoppingclm.R;
 import com.chaolemen.shoppingclm.category.bean.CategoryRespoens;
 import com.chaolemen.shoppingclm.net.CGHttpCallBack;
 import com.chaolemen.shoppingclm.user.parmesan.RegisterParmesan;
+import com.chaolemen.shoppingclm.utils.SpUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -165,51 +166,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 });
     }
 
-    private void initData() {
-        LogUtils.e("+++++++++++++++++++++++++++++++++++++++++++");
-        RegisterParmesan registerParmesan = new RegisterParmesan();
-        registerParmesan.setMobile(user);
-        registerParmesan.setPwd(pass);
-        registerParmesan.setVerifyCode(verify);
-        String toJson = JsonUtils.classToJson(registerParmesan);
-        new HttpClient.Builder()
-                .setApiUrl("userCenter/register")
-                .post()
-                .setJsonBody(toJson, true)
-                .build()
-                .request(new CGHttpCallBack() {
-                    @Override
-                    public void onSuccess(Object o) {
-                        CategoryRespoens categoryRespoens = (CategoryRespoens) o;
-                        int status = categoryRespoens.getStatus();
-                        if (status == 0) {
-                            LogUtils.e("成功");
-                            Intent intent = new Intent();
-                            intent.putExtra("user", user);
-                            setResult(300, intent);
-                            finish();
-                        } else if (status == -1) {
-                            Toast.makeText(RegisterActivity.this, categoryRespoens.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public Object convert(JsonElement result) {
-                        return result;
-                    }
-
-                    @Override
-                    public void onError(String message, int code) {
-                        LogUtils.e(message);
-                    }
-
-                    @Override
-                    public void cancle() {
-
-                    }
-                });
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -220,7 +176,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.btn_register:
                 // TODO 20/08/19
-                initRegister();
+                    initRegister();
                 break;
             case R.id.tv_register_yanzheng:
                 // TODO 20/08/19

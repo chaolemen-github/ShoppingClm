@@ -8,15 +8,19 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chaolemen.mvplibrary.base.BaseActivity;
 import com.chaolemen.shoppingclm.R;
+import com.chaolemen.shoppingclm.app.Contents;
 import com.chaolemen.shoppingclm.category.fragments.DitailFragment;
 import com.chaolemen.shoppingclm.category.fragments.DitailWebFragment;
+import com.chaolemen.shoppingclm.utils.SpUtil;
 
 import java.util.ArrayList;
 
@@ -94,10 +98,23 @@ public class DitailActivity extends BaseActivity {
             case R.id.tv_ditail_find:
                 break;
             case R.id.tv_ditail_shopping:
-                Intent intent = new Intent(DitailActivity.this, ShoppingActivity.class);
-                startActivity(intent);
+                String cookie = (String) SpUtil.getParam(Contents.SP_COOKIE, "");
+                if (!TextUtils.isEmpty(cookie)){
+                    Intent intent = new Intent(DitailActivity.this, ShoppingActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case R.id.tv_ditail_add:
+                String cookies = (String) SpUtil.getParam(Contents.SP_COOKIE, "");
+                if (!TextUtils.isEmpty(cookies)){
+                    Intent intent = new Intent(DitailActivity.this, ShoppingActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.iv_ditail:
                 finish();

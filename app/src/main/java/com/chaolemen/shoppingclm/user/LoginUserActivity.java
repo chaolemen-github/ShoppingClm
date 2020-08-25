@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,9 @@ import com.chaolemen.shoppingclm.user.bean.LoginBean;
 import com.chaolemen.shoppingclm.user.contract.LoginContract;
 import com.chaolemen.shoppingclm.user.parmesan.LoginParmesan;
 import com.chaolemen.shoppingclm.user.presenter.LoginPresenter;
+import com.chaolemen.shoppingclm.utils.SpUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,12 +76,17 @@ public class LoginUserActivity extends BaseMvpActivity<LoginContract.View, Login
     @Override
     public void onSuccess(LoginBean loginBean) {
         String userName = loginBean.getUserName();
-        Toast.makeText(this, userName+"登录成功", Toast.LENGTH_SHORT).show();
+        EventBus.getDefault().post(userName);
+        Toast.makeText(this, userName + "登录成功", Toast.LENGTH_SHORT).show();
+        //返回上一页
+        finish();
     }
 
     @Override
     public void onFailItem(String error) {
         LogUtils.e(error);
+//        SpUtil.clear();
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -97,13 +106,13 @@ public class LoginUserActivity extends BaseMvpActivity<LoginContract.View, Login
                 startActivityForResult(intent, 200);
                 break;
             case R.id.btn_login:
-                String user = mEtLoginUser.getText().toString().trim();
-                String pass = mEtLoginPass.getText().toString().trim();
-                LoginParmesan loginParmesan = new LoginParmesan();
-                loginParmesan.setMobile(user);
-                loginParmesan.setPwd(pass);
-                loginParmesan.setPushId("140fe1da9e25c9cc321");
-                mPresenter.getDataLogin(loginParmesan);
+                    String user = mEtLoginUser.getText().toString().trim();
+                    String pass = mEtLoginPass.getText().toString().trim();
+                    LoginParmesan loginParmesan = new LoginParmesan();
+                    loginParmesan.setMobile(user);
+                    loginParmesan.setPwd(pass);
+                    loginParmesan.setPushId("140fe1da9e25c9cc321");
+                    mPresenter.getDataLogin(loginParmesan);
                 break;
             case R.id.tv_login_slip:
                 break;

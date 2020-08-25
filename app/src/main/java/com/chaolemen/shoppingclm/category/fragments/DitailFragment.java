@@ -2,19 +2,21 @@ package com.chaolemen.shoppingclm.category.fragments;
 
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
-import android.util.SparseArray;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.ArrayMap;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -23,32 +25,32 @@ import com.chaolemen.httplibrary.client.HttpClient;
 import com.chaolemen.httplibrary.utils.JsonUtils;
 import com.chaolemen.httplibrary.utils.LogUtils;
 import com.chaolemen.shoppingclm.R;
-import com.chaolemen.shoppingclm.app.BaseApp;
 import com.chaolemen.shoppingclm.category.bean.CategoryDitail;
 import com.chaolemen.shoppingclm.category.parmesan.DetailParmesan;
-import com.chaolemen.shoppingclm.category.viewGroup.XCFlowLayout;
 import com.chaolemen.shoppingclm.net.CGHttpCallBack;
 import com.google.gson.JsonElement;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.loader.ImageLoader;
+import com.zhy.view.flowlayout.FlowLayout;
+import com.zhy.view.flowlayout.TagAdapter;
+import com.zhy.view.flowlayout.TagFlowLayout;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import ren.qinc.numberbutton.NumberButton;
 
-import android.graphics.Color;
-import android.os.Bundle;
-import android.view.ViewGroup.LayoutParams;
-import android.view.ViewGroup.MarginLayoutParams;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -77,6 +79,8 @@ public class DitailFragment extends Fragment {
     private String pei;
     private String ban;
     private int id = -1;
+    private BottomDialog bottomDialog;
+
 
     public DitailFragment(int position) {
         // Required empty public constructor
@@ -161,9 +165,6 @@ public class DitailFragment extends Fragment {
         EventBus.getDefault().postSticky(bean);
 
         beans = bean;
-//        mNames = new String[]{
-//               bean.getGoodsDefaultPrice()
-//        };
     }
 
     @OnClick({R.id.tv_ditail_xuan, R.id.tv_ditail_select, R.id.iv_ditail_more})
@@ -172,176 +173,123 @@ public class DitailFragment extends Fragment {
             case R.id.tv_ditail_xuan:
                 break;
             case R.id.tv_ditail_select:
-                initPop();
+                bottomDialog = new BottomDialog(getActivity(),beans);
+                bottomDialog.show();
                 break;
             case R.id.iv_ditail_more:
-                initPop();
                 break;
         }
     }
 
-    private void initPop() {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_ditail_pop, null);
-        final PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, 1300);
-        popupWindow.setBackgroundDrawable(new ColorDrawable());
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0);
-        alpha(0.5f);
-
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                alpha(1);
-            }
-        });
-
-        ImageView img = view.findViewById(R.id.iv_pop_img);
-        TextView title = view.findViewById(R.id.tv_pop_title);
-        TextView text = view.findViewById(R.id.tv_pop_text);
-        ImageView close = view.findViewById(R.id.iv_pop_close);
-        Button add = view.findViewById(R.id.btn_pop_add);
-        Button jian = view.findViewById(R.id.btn_pop_jian);
-        Button jia = view.findViewById(R.id.btn_pop_jia);
-        final TextView codes = view.findViewById(R.id.tv_pop_code);
-
-        jia.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                code++;
-                codes.setText(code + "");
-                tvDitailSelect.setText(ban+","+pei+","+code+"件");
-            }
-        });
-
-        jian.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (code > 1) {
-                    code--;
-                    codes.setText(code + "");
-                    tvDitailSelect.setText(ban+","+pei+","+code+"件");
-                } else {
-                    Toast.makeText(getActivity(), "已到最小选中数量，不能再减少", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        codes.setText(code + "");
-
-        Glide.with(getActivity()).load(beans.getGoodsDefaultIcon()).into(img);
-        title.setText("￥" + money + ".00");
-        text.setText("商品编号：" + beans.getGoodsCode());
-
-        /**
-         * 点击加入购物车
-         *
-         * 关闭popupWindow
-         */
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EventBus.getDefault().postSticky(code);
-                popupWindow.dismiss();
-            }
-        });
-
-        //点击关闭popupWindow
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-
-        List<CategoryDitail.GoodsSkuBean> goodsSku = beans.getGoodsSku();
-
-        for (int i = 0; i < goodsSku.size(); i++) {
-            CategoryDitail.GoodsSkuBean goodsSkuBean = goodsSku.get(i);
-            if (goodsSkuBean.getId() == 1) {
-                initChildViews(view, goodsSkuBean);
-            } else if (goodsSkuBean.getId() == 2) {
-                initChildViewss(view, goodsSkuBean);
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void eventBusSku(String str){
+        List<String> skuEvent = bottomDialog.getSkuEvent();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < skuEvent.size(); i++) {
+            stringBuilder.append(skuEvent.get(i));
+            if (i!=skuEvent.size()-1){
+                stringBuilder.append(",");
             }
         }
 
+        tvDitailSelect.setText(stringBuilder.toString()+bottomDialog.numberButton.getNumber()+"件");
     }
 
-    private void initChildViews(View root, CategoryDitail.GoodsSkuBean goodsSkuBean) {
-        // TODO Auto-generated method stub
+    //低部弹出Dialog,动态添加控件到ViewGroup
+    class BottomDialog extends BottomSheetDialog implements View.OnClickListener {
+        List<Map<TagFlowLayout,List<String>>> skuStringList = new ArrayList<>();
+        public NumberButton numberButton;
+        private List<CategoryDitail.GoodsSkuBean> goodsSkuBeans;
+        public BottomDialog( final Context context, CategoryDitail categoryDitail) {
+            super(context);
+            this.goodsSkuBeans = goodsSkuBeans;
+            setContentView(R.layout.layout_sku_pop);
+            findViewById(R.id.mCloseIv).setOnClickListener(this);
+            ImageView imageView = findViewById(R.id.mGoodsIconIv);
+            Glide.with(context).load(categoryDitail.getGoodsDefaultIcon()).into(imageView);
+            numberButton = findViewById(R.id.mSkuCountBtn);
+            //数量默认选中1
+            numberButton.setCurrentNumber(1);
 
-        final SparseArray<Boolean> sparseArray = new SparseArray<>();
-        List<String> skuContent = goodsSkuBean.getSkuContent();
-
-        XCFlowLayout mFlowLayout = root.findViewById(R.id.flowlayout);
-        ViewGroup.MarginLayoutParams lp = new MarginLayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        lp.leftMargin = 5;
-        lp.rightMargin = 5;
-        lp.topMargin = 5;
-        lp.bottomMargin = 5;
-        for (int i = 0; i < skuContent.size(); i++) {
-            sparseArray.put(i, false);
-            final TextView view = new TextView(getActivity());
-            ban = skuContent.get(i);
-            view.setText(ban);
-            view.setTextColor(Color.WHITE);
-            view.setBackgroundColor(Color.RED);
-
-            if (i==0){
-                view.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_bg));
-            }
-
-            final int finalI = i;
-            view.setOnClickListener(new View.OnClickListener() {
+            EditText editText = numberButton.findViewById(R.id.text_count);
+            editText.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void onClick(View v) {
-                    sparseArray.put(finalI,true);
-                    id = finalI;
-                    LogUtils.e("===========================");
-                    view.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_bg));
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    EventBus.getDefault().postSticky("");
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
                 }
             });
-            if (sparseArray.get(i)){
-                tvDitailSelect.setText(ban+","+pei+","+code+"件");
-                view.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_bg));
-            } else {
-                view.setBackgroundDrawable(getResources().getDrawable(R.drawable.textview_bg));
+
+            //父控件
+            ViewGroup viewGroup = findViewById(R.id.mSkuView);
+            View inflate = null;
+            for (CategoryDitail.GoodsSkuBean goodsSkuBean : goodsSkuBeans) {
+                Map<TagFlowLayout,List<String>> skuStringMap = new ArrayMap<>();
+                //初始化一组数据
+                inflate =  LayoutInflater.from(getActivity()).inflate(R.layout.layout_sku_view, null, false);
+                TagFlowLayout tagFlowLayout = inflate.findViewById(R.id.mSkuContentView);
+                TextView textView = inflate.findViewById(R.id.mSkuTitleTv);
+                textView.setText(goodsSkuBean.getGoodsSkuTitle());
+                List<String> skuContent = goodsSkuBean.getSkuContent();
+                tagFlowLayout.setAdapter(new TagAdapter<String>(skuContent) {
+                    @Override
+                    public View getView(com.zhy.view.flowlayout.FlowLayout parent, int position, String s) {
+                        TextView textView1 = (TextView) LayoutInflater.from(context)
+                                .inflate(R.layout.layout_sku_item, parent, false);
+                        textView1.setText(s);
+                        return textView1;
+                    }
+                });
+
+                tagFlowLayout.getAdapter().setSelectedList(0);
+                tagFlowLayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+                    @Override
+                    public boolean onTagClick(View view, int position, FlowLayout parent) {
+                        EventBus.getDefault().post("");
+                        return true;
+                    }
+                });
+
+                skuStringMap.put(tagFlowLayout,skuContent);
+                skuStringList.add(skuStringMap);
+                //将一组数据添加到父控件当中
+                viewGroup.addView(inflate);
             }
-
-            view.setSelected(false);
-            mFlowLayout.addView(view, lp);
         }
-    }
 
-    private void initChildViewss(View root, CategoryDitail.GoodsSkuBean goodsSkuBean) {
-        // TODO Auto-generated method stub
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.mCloseIv:
+                    bottomDialog.dismiss();
+                    break;
+            }
+        }
 
-
-        List<String> skuContent = goodsSkuBean.getSkuContent();
-
-        XCFlowLayout mFlowLayouts = root.findViewById(R.id.flowlayout_peizhi);
-        ViewGroup.MarginLayoutParams lp = new MarginLayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        lp.leftMargin = 5;
-        lp.rightMargin = 5;
-        lp.topMargin = 5;
-        lp.bottomMargin = 5;
-        for (int i = 0; i < skuContent.size(); i++) {
-            TextView view = new TextView(getActivity());
-            pei = skuContent.get(i);
-            view.setText(pei);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    tvDitailSelect.setText(ban+","+pei+","+code+"件");
+        public List<String> getSkuEvent(){
+            List<String> skuCount = new ArrayList<>();
+            for (Map<TagFlowLayout, List<String>> listMap : skuStringList) {
+                Set<Map.Entry<TagFlowLayout, List<String>>> entrySet = listMap.entrySet();
+                for (Map.Entry<TagFlowLayout, List<String>> entry : entrySet) {
+                    TagFlowLayout tagFlowLayout = entry.getKey();
+                    List<String> value = entry.getValue();
+                    skuCount.add(value.get(tagFlowLayout.getSelectedList().iterator().next()));
                 }
-            });
-            view.setTextColor(Color.WHITE);
-            view.setBackgroundDrawable(getResources().getDrawable(R.drawable.textview_bg));
-            mFlowLayouts.addView(view, lp);
+            }
+            return skuCount;
         }
     }
+
+
 
     public void alpha(float alpha) {
         WindowManager.LayoutParams attributes = getActivity().getWindow().getAttributes();

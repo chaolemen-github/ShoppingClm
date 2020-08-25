@@ -4,15 +4,19 @@ import android.app.Application;
 import android.content.Context;
 
 import com.chaolemen.httplibrary.HttpGlobalConfig;
+import com.chaolemen.shoppingclm.user.interceptor.CookieInterceptor;
 import com.squareup.leakcanary.LeakCanary;
 import com.tencent.bugly.crashreport.CrashReport;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Interceptor;
 
 public class BaseApp extends Application {
 
     private static BaseApp app;
-    Context context;
+
 
     public static BaseApp getApp() {
         return app;
@@ -30,9 +34,17 @@ public class BaseApp extends Application {
     }
 
     private void initCategory() {
+        /**
+         * 添加拦截器
+         * 获取请求头里的cookie
+         */
+        ArrayList<Interceptor> interceptors = new ArrayList<>();
+        interceptors.add(new CookieInterceptor());
+
         HttpGlobalConfig.getInsance()
                 .setBaseUrl("http://169.254.189.205:8080/kotlin/")
                 .setTimeout(10)
+                .setInterceptors(interceptors)
                 .setTimeUnit(TimeUnit.SECONDS)
                 .setShowLog(true)
                 .initReady(this);
